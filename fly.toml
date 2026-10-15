@@ -1,0 +1,30 @@
+# Starting point for Fly.io. This file does not deploy anything by itself.
+# Change `app` to a name you own before `fly apps create` or `fly launch`.
+
+app = "folio"
+primary_region = "iad"
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/api/health"
+    interval = "30s"
+    timeout = "5s"
+
+[[mounts]]
+  source = "folio_data"
+  destination = "/data"
+
+[env]
+  FOLIO_DATABASE_PATH = "/data/folio.db"
+  FOLIO_STATIC_DIR = "/app/frontend/dist"
+  FOLIO_COOKIE_SECURE = "1"
+  FOLIO_PUBLIC_URL = "https://folio.fly.dev"
